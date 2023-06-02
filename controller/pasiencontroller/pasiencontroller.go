@@ -5,17 +5,27 @@ import (
 	"net/http"
 
 	"github.com/lulungsatrioprayuda/go-crud/entities"
+	"github.com/lulungsatrioprayuda/go-crud/libraries"
 	"github.com/lulungsatrioprayuda/go-crud/models"
 )
+
+var validation = libraries.NewValidation()
 
 var pasienModel = models.NewPasienModel()
 
 func Index(response http.ResponseWriter, request *http.Request) {
+
+	pasien, _ := pasienModel.FindAll()
+	
+	data := map[string]interface{}{
+		"pasien": pasien,
+	}
+
 	temp, err := template.ParseFiles("views/pasien/index.html")
 	if err != nil {
 		panic(err)
 	}
-	temp.Execute(response,nil)
+	temp.Execute(response,data)
 	
 }
 func Add(response http.ResponseWriter, request *http.Request) {
@@ -38,11 +48,18 @@ func Add(response http.ResponseWriter, request *http.Request) {
 		pasien.Alamat = request.Form.Get("alamat")
 		pasien.NoHp = request.Form.Get("no_hp")
 		
+		var data = make(map[string]interface{})
+
+		vErrors := validation.Struct(pasien)
+
+	if vErrors != nil {
+		data["pasien"] = pasien
+		data["validation"] = vErrors
+	} else {
+		data["pesan"] = "data pasien berhasil disimpan"
 		pasienModel.Create(pasien)
-		data := map[string]interface{}{
-			"pesan": "Data pasien baru disimpan",
-		}
-		
+	}
+
 		temp, _ := template.ParseFiles("views/pasien/add.html")
 		temp.Execute(response, data)
 	}

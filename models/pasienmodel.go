@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/lulungsatrioprayuda/go-crud/config"
 	"github.com/lulungsatrioprayuda/go-crud/entities"
@@ -20,6 +21,39 @@ func NewPasienModel() *PasienModel {
 	return &PasienModel{
 		conn: conn,
 	}
+}
+func (p *PasienModel)FindAll()([]entities.Pasien,error){
+	query, err := p.conn.Query("SELECT * FROM pasien")
+	if err != nil{
+		return []entities.Pasien{}, err
+	}
+	defer query.Close()
+	
+	var dataPasien []entities.Pasien
+	for query.Next(){
+		var pasien entities.Pasien
+		query.Scan(
+			&pasien.Id, 
+			&pasien.NamaLengkap, 
+			&pasien.NIK, 
+			&pasien.JenisKelamin, 
+			&pasien.TempatLahir, 
+			&pasien.TanggaLahir, 
+			&pasien.Alamat, 
+			&pasien.NoHp)
+
+			if pasien.JenisKelamin == "1"{
+				pasien.JenisKelamin = "Laki - Laki"
+			}else {
+				pasien.JenisKelamin = "Perempuan"
+			}
+			//2006-01-02 sama kayak yyyy-mm-dd
+			tgl_lahir, _ := time.Parse("2006-01-02", pasien.TanggaLahir)
+			//02-01-2006 sama kayak dd-mm-yyyy dan merupakan format indo	
+			pasien.TanggaLahir = tgl_lahir.Format("02-01-2006")
+			dataPasien = append(dataPasien, pasien)
+	}
+	return dataPasien, nil
 }
 
 func (p *PasienModel)Create(pasien entities.Pasien) bool{
