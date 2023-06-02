@@ -25,6 +25,9 @@
       <h3>Tambah Data Pasien</h3>
       <a href="/pasien" class="btn btn-sm btn-primary">Lihat Data</a>
       <hr />
+      {{ if.pesan }}
+      <div class="alert alert-success">{{ .pesan }}</div>
+      {{ end }}
       <form action="/pasien/add" method="post">
         <div class="form-group">
           <label for="">Nama Lengkap</label>
