@@ -36,6 +36,7 @@ func Add(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			panic(err)
 		}
+
 		temp.Execute(response, nil)
 	} else if request.Method == http.MethodPost {
 		request.ParseForm()
