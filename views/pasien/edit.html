@@ -20,13 +20,13 @@
 
 <body>
     <div class="container mt-5">
-        <h3>Tambah Data Pasien</h3>
+        <h3>Ubah Data Pasien</h3>
         <a href="/pasien" class="btn btn-sm btn-primary">Lihat Data</a>
         <hr />
         {{ if.pesan }}
         <div class="alert alert-success">{{ .pesan }}</div>
         {{ end }}
-        <form action="/pasien/add" method="post">
+        <form action="/pasien/edit" method="post">
             <div class="form-group">
                 <label for="">Nama Lengkap</label>
                 <input type="text" name="nama_lengkap" value="{{ .pasien.NamaLengkap }}"
@@ -68,7 +68,7 @@
             </div>
             <div class="form-group">
                 <label for="">Alamat</label>
-                <textarea name="alamat"
+                <textarea type="text" name="alamat"
                     class="form-control {{ if .validation.Alamat }} is-invalid {{ end }}">{{ .pasien.Alamat }}</textarea>
                 <div class="invalid-feedback">{{ .validation.Alamat }}</div>
             </div>
@@ -79,7 +79,8 @@
                 <div class="invalid-feedback">{{ .validation.NoHp }}</div>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary mt-2">SIMPAN</button>
+                <input type="hidden" name="id" value="{{ .pasien.Id }}" />
+                <button type="submit" class="btn btn-primary mt-2">UBAH DATA</button>
             </div>
         </form>
     </div>
